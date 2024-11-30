@@ -3,38 +3,5 @@
 {% block title %}Accueil - Annonces{% endblock %}
 
 {% block body %}
-<div class="container mt-4">
-    <h1 class="mb-4">Toutes les annonces</h1>
 
-    {% if annonces is empty %}
-        <div class="alert alert-warning">
-            Aucune annonce disponible pour le moment.
-        </div>
-    {% else %}
-        <div class="row">
-            {% for annonce in annonces %}
-                <div class="col-md-4 mb-4">
-                    <div class="card shadow-sm">
-                        <div class="card-body">
-                            <h5 class="card-title">{{ annonce.title }}</h5>
-                            <h6 class="card-subtitle mb-2 text-muted">
-                                {{ annonce.lieu }}
-                            </h6>
-                            <p class="card-text">
-                                {{ annonce.description|slice(0, 100) ~ '...' }}
-                            </p>
-                            <p class="text-success fw-bold">
-                                Salaire : {{ annonce.salaire }} €
-                            </p>
-                            <p class="text-muted small">
-                                Publiée le {{ annonce.createdAt|date('d/m/Y') }}
-                            </p>
-                            <a href="#" class="btn btn-primary btn-sm">Voir l'annonce</a>
-                        </div>
-                    </div>
-                </div>
-            {% endfor %}
-        </div>
-    {% endif %}
-</div>
 {% endblock %}
