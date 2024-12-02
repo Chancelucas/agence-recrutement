@@ -4,8 +4,7 @@ namespace App\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpFoundation\RedirectResponse;
-use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 
 class SecurityController extends AbstractController
@@ -13,11 +12,16 @@ class SecurityController extends AbstractController
     #[Route(path: '/login', name: 'app_login')]
     public function login(AuthenticationUtils $authenticationUtils): Response
     {
-        // Si déjà connecté, rediriger en fonction des rôles
+        // Si déjà connecté, rediriger selon le rôle
         if ($this->getUser()) {
-            return $this->redirectToRoute($this->getUser()->getRoles()[0] === 'ROLE_ADMIN' ? 'app_admin_dashboard' : 'app_user_dashboard');
+            if (in_array('ROLE_ADMIN', $this->getUser()->getRoles())) {
+                return $this->redirectToRoute('admin_dashboard');
+            } else {
+                return $this->redirectToRoute('user_dashboard');
+            }
         }
 
+        // Gestion classique de l'erreur et du dernier nom d'utilisateur
         $error = $authenticationUtils->getLastAuthenticationError();
         $lastUsername = $authenticationUtils->getLastUsername();
 
@@ -31,19 +35,5 @@ class SecurityController extends AbstractController
     public function logout(): void
     {
         throw new \LogicException('This method can be blank - it will be intercepted by the logout key on your firewall.');
-    }
-
-    private function getRedirectRoute(): string
-    {
-        $roles = $this->getUser()->getRoles();
-
-
-        if (in_array('ROLE_ADMIN', $roles)) {
-            return 'app_admin_dashboard';
-        } elseif (in_array('ROLE_USER', $roles)) {
-            return 'app_user_dashboard';
-        } else {
-            return 'app_home';
-        }
     }
 }

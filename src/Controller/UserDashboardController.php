@@ -11,6 +11,7 @@ class UserDashboardController extends AbstractController
     #[Route('/user/dashboard', name: 'app_user_dashboard')]
     public function index(): Response
     {
+        $this->denyAccessUnlessGranted('ROLE_USER');
         return $this->render('user_dashboard/index.html.twig');
     }
 }
